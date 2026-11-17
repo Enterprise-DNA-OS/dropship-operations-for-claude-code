@@ -1,5 +1,3 @@
-# Slash commands
+# One command library
 
-One file per recurring job. Each command tells Claude Code exactly which CLI command to run and how to present the result, so the operator never re-explains the job.
-
-Add a command every time the same ask comes twice. Frontmatter needs a `description:` line. The body is the brief.
+Read CLAUDE.md first. Every file here is a task recipe for the same scripts/dropship.mjs CLI. Codex, OpenCode and Cursor use these files too. There is no separate agent-specific command implementation. Operational command recipes contain placeholders; replace them only from the operator's brief and recorded evidence.

@@ -1,115 +1,85 @@
-<h1 align="center">Dropship Operations for Claude Code</h1>
+# Dropship Operations for Claude Code
 
-<p align="center">
-  <strong>The open-source dropship operations system that is just a database and Claude Code.</strong>
-</p>
+Own the supplier promises behind every order. Bring Duoplane product and prepared purchase-order exports into your own database. Review acknowledgements, partial shipments, stale stock and returns with Claude Code, Codex, OpenCode or Cursor. MIT licensed.
 
-<p align="center">
-  Created by <a href="https://www.enterprisedna.co"><strong>Enterprise DNA</strong></a>. Free and open source. Works with Claude Code, Codex, OpenCode or Cursor.
-</p>
+## Three ways to use it
 
-<!-- three-doors -->
-<table align="center">
-  <tr>
-    <td align="center"><strong>Do it yourself</strong><br/>Clone it, run it, own it. Free, MIT.<br/><a href="#quick-start">Quick start</a></td>
-    <td align="center"><strong>We customise it</strong><br/>Your fields, your rules, your Duoplane data brought across.<br/><a href="https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=duoplane">Book a call</a></td>
-    <td align="center"><strong>We run it for you</strong><br/>Installed, connected and operated inside Omni. Setup fee, then a retainer.<br/><a href="https://enterprisedna.co/omni/instead-of/duoplane?utm_source=github&utm_medium=readme&utm_campaign=duoplane">How it works</a></td>
-  </tr>
-</table>
+- **Do it yourself:** install the free base and run your own supplier desk. Hosting and your coding-agent subscription remain your costs.
+- **We customise it:** Enterprise DNA maps your Duoplane exports, adds your supplier rules and builds the store connections, web front end or different stack your team needs.
+- **We run it for you:** Omni by Enterprise DNA installs, connects and operates your version. One setup fee, then a retainer. [Book a 30-minute call](https://enterprisedna.co/omni/book/?offer=replace-software&utm_campaign=duoplane&utm_medium=readme).
 
-<p align="center">
-  <a href="#what-is-this">What is this</a> &bull;
-  <a href="#why-no-front-end">Why no front end</a> &bull;
-  <a href="#quick-start">Quick start</a> &bull;
-  <a href="#the-commands">Commands</a> &bull;
-  <a href="#instead-of-duoplane">Instead of Duoplane</a> &bull;
-  <a href="#want-it-installed-and-run-for-you">Installed for you</a> &bull;
-  <a href="#license">License</a>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Node-20+-339933?style=flat-square" alt="Node 20+" />
-  <img src="https://img.shields.io/badge/PostgreSQL-any-336791?style=flat-square" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/PGlite-embedded-3ecf8e?style=flat-square" alt="PGlite" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" />
-</p>
-
----
-
-## What is this
-
-Dropship Operations for Claude Code does the job you pay Duoplane for, as a Postgres database and a set of agent commands. There is no web front end. You open the folder in [Claude Code](https://claude.com/claude-code) (or Codex, OpenCode, Cursor: see `AGENTS.md`) and ask for what you want in plain language. It runs the right query, and it can answer questions the Duoplane dashboard cannot.
-
-<!-- TODO(author): the annual bill. One sentence: what a 10 to 50 person business typically pays Duoplane per year, all in, with a source. -->
-
-Want the same thing with a web front end, or built on a different stack? That is a customisation, and it is exactly what Enterprise DNA does: [book a call](https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=duoplane).
-
-<!-- TODO(author): two or three sentences on what this specific product covers and who it is for. -->
-
-## Why no front end
-
-- The front end was only ever there because the database was hard to talk to. That is no longer true.
-- Your data sits in plain Postgres tables you own. Any tool can read them. No export, no lock-in.
-- No seats, no tiers, no add-ons. Read [docs/why-no-front-end.md](docs/why-no-front-end.md) for the honest trade-offs too.
-
-## Quick start
-
-Sixty seconds, no database install (an embedded Postgres runs inside Node):
+## Try the fictional retailer
 
 ```bash
-git clone https://github.com/Enterprise-DNA-OS/dropship-operations-for-claude-code.git
-cd dropship-operations-for-claude-code
 npm install
+npm test
 npm run demo
 ```
 
-Then open the folder in Claude Code and type a slash command. <!-- TODO(author): name the first command to try. -->
+Node 22 or later. The demo uses a temporary PGlite database, renders three dashboards and three document types, prints three real command runs and removes its own files. Add `-- --keep` to retain the demo directory. It never seeds your business database. Dates in demo records are relative to the day you run it.
 
-### Use it with your own Postgres or Supabase
+## Start your supplier desk
 
-Copy `.env.example` to `.env`, set `DATABASE_URL`, then `npm run migrate`. Same commands, shared data, no per-seat fee.
-
-## The commands
-
-<!-- TODO(author): a table of the slash commands in .claude/commands and what each one does. -->
-
-| Command | What it does |
-|---|---|
-| `/...` | ... |
-
-## Instead of Duoplane
-
-<!-- TODO(author): how to bring data across from Duoplane; link docs/replace-duoplane.md -->
-
-## Architecture
-
-```
-dropship-operations-for-claude-code/
-  CLAUDE.md                 how the operator wants this run (routing table + house rules)
-  AGENTS.md                 the same, for Codex / OpenCode / Cursor / Gemini CLI
-  .claude/commands/         the slash commands
-  scripts/                  the CLI the commands drive
-  scripts/lib/db.mjs        one adapter: DATABASE_URL (pg) or embedded PGlite
-  supabase/migrations/      plain SQL schema
-  supabase/seed.sql         demo data
-  docs/                     the thesis and the migration guide
+```bash
+npm run migrate
+node scripts/dropship.mjs init --name="Your business" --by="Your name"
+node scripts/dropship.mjs import duoplane your-products.csv --kind=products --currency=NZD --stock-at=2026-11-17T09:00:00Z --by="Your name" --dry-run
 ```
 
-## Built for coding agents
+Set the currency and stock timestamp to the actual export values. Then remove `--dry-run` to apply the same import. Product inventory-summary headings are documented by Duoplane. Purchase-order exports need quantities and historical shipped balances mapped as described in [the switching guide](docs/replace-duoplane.md). Examples are fictional fixtures, not captured customer exports.
 
-The database, CLI and command recipes work with Claude Code, Codex, OpenCode or Cursor. Ask your coding agent for a new command and have it implement and test the change against the same records.
+`DATABASE_URL` selects Postgres. Otherwise `DATA_DIR` selects embedded PGlite, defaulting to `.data/db`. `OUTPUT_DIR` controls exports, documents, drafts and views. One business and one trusted operator per workspace. Operator labels record who said they performed the action, not an authenticated identity. Keep the owner database connection private.
 
-## Contributing
+The base ships 30 CLI operations and 36 task recipes in one command library.
 
-Issues and pull requests are welcome. Keep the shape: plain SQL, a small CLI, a slash command per recurring job, no front end.
+## Five recurring jobs
 
-## Want it installed and run for you?
+1. `/supplier-promises`: find overdue and missing ship promises.
+2. `/acknowledgements`: review unconfirmed lines and record supplier receipt.
+3. `/stock-review`: check supplier stock age before discussing availability.
+4. `/shipment-reconcile`: reconcile ordered, already shipped and newly dispatched units.
+5. `/weekly-review`: combine supplier exposure, attention items and compliance findings into a draft.
 
-Enterprise DNA installs Dropship Operations for Claude Code for your business, migrates your Duoplane data, connects it to the rest of your tools, and runs it for you as part of **Omni**, our managed Command Center. One setup fee, then a monthly retainer.
+`/return-review` keeps the consumer case attached to its supplier line. Shipment and return commands refuse quantities beyond their remaining balances. Every mutation is atomic and records its operator and evidence. Imports never send orders or update a store.
 
-- Book a call: [enterprisedna.co/omni/book](https://enterprisedna.co/omni/book/?offer=replace-software&utm_source=github&utm_medium=readme&utm_campaign=duoplane)
-- Read more: [enterprisedna.co/omni/instead-of/duoplane](https://enterprisedna.co/omni/instead-of/duoplane?utm_source=github&utm_medium=readme&utm_campaign=duoplane)
+## Documents and read-only views
 
-## License
+Set the business name, colours and optional logo in `brand.json`. `npm run docs` renders purchase-order working copies, supplier review packs and return records. `npm run view` renders the week, supplier exposure and stock freshness. `/draft-chase` prepares a private supplier follow-up. `/new-view` adds a read-only report.
 
-MIT. Copyright (c) 2026 Enterprise DNA.
+`/compliance` checks recorded delivery expectations, retention review dates and missing internal evidence. [Sources and limits](docs/compliance.md). A clean check does not certify legal compliance. Ship promises and customer delivery dates are separate records. Imported shipped balances do not prove delivery.
+
+## Ten questions answered today
+
+`/insights` runs these queries. Duoplane has reporting and supplier scorecards of its own. These are included analyses, not an unsupported claim that its reports cannot answer them.
+
+1. Which unconfirmed lines are already late?
+2. Which customer orders are split across suppliers?
+3. Which remaining lines rely on stale supplier stock?
+4. Which products have a negative unit spread before freight?
+5. Which late orders still have no evidenced delivery?
+6. Which suppliers carry the largest outstanding cost by currency?
+7. Which partially shipped lines are still overdue?
+8. Which returned items still need a decision?
+9. Which purchase orders need a retention review?
+10. Which active stock records lack an accountable supplier owner?
+
+## Your first hour: ten things to ask for
+
+1. Show the late promises with no supplier acknowledgement.
+2. Find customer orders split across suppliers.
+3. Show stale stock behind unfinished orders.
+4. Explain why an imported shipment has no delivery evidence.
+5. Record a supplier's revised promise with its source.
+6. Reconcile a partial shipment against the order.
+7. Draft a supplier follow-up without sending it.
+8. Render the return case in our business colours.
+9. Add a region view with `/new-view`.
+10. Add our supplier priority field with `/customise`.
+
+## What this base covers
+
+The operational record and review workflows run without store credentials. There is no live store sync, supplier portal, message delivery, carrier tracking lookup, stock reservation, automatic routing, bundle explosion, tax calculation or payment processing. Stock comparisons are per line and do not reserve or allocate shared stock across orders. Unit spread excludes freight, tax, returns and other costs. Outstanding supplier costs are grouped by currency, never converted or summed across currencies.
+
+A return outcome records a decision; it does not issue a refund. Records are retained for review, with no delete or automatic purge command. Source references are pointers, not stored evidence files. JSON export is a complete readable archive, not a database restore tool. Keep original exports and tested backups. Connections and authenticated multi-user access need implementation and acceptance testing for your version.
+
+[CLI reference](docs/cli.md) · [Research](docs/research.md) · [Why no front end](docs/why-no-front-end.md)

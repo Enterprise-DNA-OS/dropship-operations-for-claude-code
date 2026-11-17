@@ -1,0 +1,3 @@
+id,name,retailer_sku,vendor_sku,price,cost,vendor_name,quantity_available,active
+D-1,"Desk lamp, brass",LAMP,CO-LAMP,75.00,45.00,Coastal Supply,8,true
+D-2,Wool throw,THROW,CO-THROW,60.00,35.00,Coastal Supply,3,true

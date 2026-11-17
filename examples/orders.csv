@@ -1,0 +1,3 @@
+Purchase Order ID,Purchase Order,Customer Order,Vendor name,Order Date,Retention Review,Delivery Due,PO Confirmation Time,Order Item ID,Vendor SKU,Item Name,Quantity,Shipped Quantity,Item Cost Each,Promise Date
+P-1,DP-100,SHOP-100,Coastal Supply,2026-11-01,2027-11-01,2026-11-09,2026-11-02T10:00:00Z,I-1,CO-LAMP,"Desk lamp, brass",10,2,45.00,2026-11-05
+P-1,DP-100,SHOP-100,Coastal Supply,2026-11-01,2027-11-01,2026-11-09,2026-11-02T10:00:00Z,I-2,CO-THROW,Wool throw,3,0,35.00,2026-11-06

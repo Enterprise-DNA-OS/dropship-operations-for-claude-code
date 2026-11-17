@@ -1,11 +1,51 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
+    "name": "purchase-order",
+    "title": "Purchase order working copy",
+    "for_each": "select id,number from purchase_orders order by number",
+    "file": "number",
+    "sections": [
+      {
+        "title": "Order details",
+        "layout": "record",
+        "sql": "select p.number,p.customer_order,v.name supplier,p.currency,p.placed_on,p.delivery_due,p.evidence from purchase_orders p join vendors v on v.id=p.vendor_id where p.id=$1",
+        "note": "Internal working copy. No supplier transmission or payment instruction."
+      },
+      {
+        "title": "Items",
+        "sql": "select vendor_sku,name,quantity,shipped,outstanding,unit_cost_cents,currency,promise_on from v_balances where po_id=$1 order by source_id"
+      }
+    ]
+  },
+  {
+    "name": "supplier-review",
+    "title": "Supplier review pack",
+    "for_each": "select id,name from vendors order by name",
     "file": "name",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Owner and evidence",
+        "layout": "record",
+        "sql": "select name,owner,evidence from vendors where id=$1"
+      },
+      {
+        "title": "Open commitments",
+        "sql": "select b.number,b.source_id,b.name,b.outstanding,b.promise_on,b.late from v_balances b join purchase_orders p on p.id=b.po_id where p.vendor_id=$1 and b.outstanding>0 order by b.number"
+      }
+    ]
+  },
+  {
+    "name": "return-case",
+    "title": "Return review record",
+    "for_each": "select id,reference from returns order by reference",
+    "file": "reference",
+    "sections": [
+      {
+        "title": "Recorded case",
+        "layout": "record",
+        "sql": "select r.reference,b.number,b.vendor,r.quantity,r.reason,r.review_due,r.outcome,r.resolved_on from returns r join v_balances b on b.id=r.item_id where r.id=$1",
+        "note": "A recorded outcome does not issue a refund or determine consumer rights."
+      }
     ]
   }
 ]

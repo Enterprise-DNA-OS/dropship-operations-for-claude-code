@@ -1,13 +1,35 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Dropship Operations for Claude Code: what needs attention, rendered by npm run view",
+    "title": "Supplier promises this week",
     "sections": [
       {
         "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "sql": "select * from v_attention order by rule,reference"
+      },
+      {
+        "title": "Outstanding promises",
+        "sql": "select number,vendor,source_id,promise_on,outstanding,late from v_balances where outstanding>0 order by promise_on nulls first,number"
+      }
+    ]
+  },
+  {
+    "name": "suppliers",
+    "title": "Supplier review",
+    "sections": [
+      {
+        "title": "Open supplier exposure",
+        "sql": "select name,currency,units_outstanding,late_lines,outstanding_cost_cents from v_supplier_review order by name,currency"
+      }
+    ]
+  },
+  {
+    "name": "stock",
+    "title": "Supplier stock freshness",
+    "sections": [
+      {
+        "title": "Snapshot review",
+        "sql": "select retailer_sku,vendor,available,stock_at,stale,active from v_stock order by retailer_sku,vendor"
       }
     ]
   }
